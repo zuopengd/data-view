@@ -6,7 +6,7 @@
   "scripts": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zuopengd/iDataV.git"
+    "url": "git+https://github.com/zuopengd/data-view.git"
   },
   "keywords": [
     "vue-bigscreen",

@@ -1,8 +1,9 @@
 <template>
-  <div class="zp-digital-flop-enhanced" :style="style" :ref="iref">{{ num }}</div>
+  <div class="zp-digital-flop-enhanced" :style="mergedConfig.style" :ref="iref">{{ num }}</div>
 </template>
 <script lang="ts" setup>
 import { reactive, computed, watch, onMounted } from 'vue'
+import { numFormat } from '../util'
 // 导入动画库
 import gsap from 'gsap'
 
@@ -14,29 +15,28 @@ const props = defineProps({
     type: Number,
     default: 0
   },
-  /**
-   * 千位分割
-   */
-  kilobit: {
-    type: Boolean,
-    default: true
-  },
-  /**
-   * 小数支持
-   */
-  decimal: {
-    type: Boolean,
-    default: false
-  },
-
-  /**
-   * css配置
-   */
-  style: {
+  config: {
     type: Object,
     default: () => {}
   }
 })
+
+const defaultConfig = {
+  /**
+   * 小数位数
+   */
+  decimal: 0,
+  /**
+   * 千位分割 true | false
+   */
+  kilobit: true,
+  /**
+   * 自定义样式
+   */
+  style: () => {
+    return {}
+  }
+}
 
 const iref = 'digital-flop-enhanced'
 
@@ -44,13 +44,15 @@ const data = reactive({
   num: 0
 })
 
+const mergedConfig = computed(() => {
+  return { ...defaultConfig, ...props.config }
+})
+
 const num = computed(() => {
-  let num = data.num
-  if (!props.decimal) {
-    num = Math.ceil(num)
-  }
-  // toLocaleString 千位分割
-  return props.kilobit ? num.toLocaleString() : num
+  const { decimal, kilobit } = mergedConfig.value
+  let n = data.num
+  if (decimal >= 0) n = Number(n.toFixed(decimal))
+  return kilobit ? numFormat(n) : n
 })
 
 watch(
@@ -86,7 +88,6 @@ const animation = (value: number) => {
 </script>
 <style lang="scss" scoped>
 .zp-digital-flop-enhanced {
-  // color: #fff;
-  // overflow: hidden;
+  display: inline-block;
 }
 </style>

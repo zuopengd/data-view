@@ -1,13 +1,17 @@
 <template>
   <main>
-    <zp-charts :option="option" :geojson="map" :callback="callback" />
+    <!-- <zp-digital-flop-enhanced
+      :num="123234.1111"
+      :config="{ decimal: 2, kilobit: false, style: { fontSize: '33px' } }"
+    /> -->
+    <zp-charts :option="option" :config="{ mapjson: map }" />
   </main>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-// import map from '@/assets/json/aaa.geojson?raw'
 import map from '@/assets/json/510700_full.json?raw'
+// import map from '@/assets/json/513200_full.json?raw'
 import * as echarts from 'echarts'
 
 let sandianlist: any = []
@@ -29,7 +33,7 @@ const option = computed(() => {
 
 const callback = (chart: any) => {
   return
-  var mapFeatures = echarts.getMap('geojson').geoJson.features
+  var mapFeatures = echarts.getMap('mapjson').geoJson.features
 }
 const sandian = () => {
   let mapFeatures = JSON.parse(map).features
@@ -59,7 +63,7 @@ const init = () => {
     geo: [
       // 高亮虚影层
       {
-        map: 'geojson',
+        map: 'mapjson',
         aspectScale: 1,
         roam: false, // 是否允许缩放
         zoom: 1.2, // 默认显示级别
@@ -79,7 +83,7 @@ const init = () => {
       },
       // 实际层
       {
-        map: 'geojson',
+        map: 'mapjson',
         aspectScale: 1,
         roam: false, // 是否允许缩放
         zoom: 1.2, // 默认显示级别
@@ -104,7 +108,7 @@ const init = () => {
       },
       // 底部重影层
       {
-        map: 'geojson',
+        map: 'mapjson',
         aspectScale: 1,
         roam: false, // 是否允许缩放
         zoom: 1.2, // 默认显示级别
@@ -123,7 +127,7 @@ const init = () => {
       // map
       {
         type: 'map',
-        map: 'geojson',
+        map: 'mapjson',
         aspectScale: 1,
         roam: false, // 是否允许缩放
         zoom: 1.2, // 默认显示级别

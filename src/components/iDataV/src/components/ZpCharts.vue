@@ -5,12 +5,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted, getCurrentInstance } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted, getCurrentInstance } from 'vue'
 import { uuid } from '../util'
 import { useAutoresize } from '../util/autoResize'
 import * as echarts from 'echarts'
-import 'echarts-liquidfill/src/liquidFill.js' //在这里引入
-import 'echarts-gl'
+import 'echarts-liquidfill/src/liquidFill.js' //水球图
+import 'echarts-gl' // 3D地图
 
 const instance = getCurrentInstance()
 
@@ -28,18 +28,34 @@ const props = defineProps({
     type: Object,
     default: null
   },
-  callback: {
-    type: Function,
-    default: null
-  },
-  autoSwitch: {
-    type: Array,
-    default: null
-  },
-  geojson: {
-    type: String,
-    default: null
+  config: {
+    type: Object,
+    default: () => {}
   }
+})
+
+interface config {
+  callback: Function | null
+  autoSwitch: Array<any> | null
+  mapjson: string | null
+}
+const defaultConfig: config = {
+  /**
+   * 渲染完成后回调
+   */
+  callback: null,
+  /**
+   * 自动切换项目
+   */
+  autoSwitch: null,
+  /**
+   * 地图json数据
+   */
+  mapjson: null
+}
+
+const mergedConfig = computed(() => {
+  return { ...defaultConfig, ...props.config }
 })
 
 watch(
@@ -67,12 +83,13 @@ const afterAutoResizeMixinInit = () => {
   initChart()
 }
 const initChart = () => {
-  const { option, autoSwitch, callback, geojson } = props
+  const { option } = props
+  const { autoSwitch, callback, mapjson } = mergedConfig.value
   chart = echarts.init(instance?.refs[chartRef.value] as unknown as HTMLDivElement)
 
   if (!option) return
 
-  geojson && echarts.registerMap('geojson', geojson)
+  mapjson && echarts.registerMap('mapjson', mapjson)
 
   chart.setOption(option)
 
@@ -87,7 +104,11 @@ const onResize = () => {
 }
 
 const autoSwitchInit = () => {
-  const { option, autoSwitch } = props
+  const { option } = props
+  const { autoSwitch } = mergedConfig.value
+  if (!autoSwitch) {
+    return
+  }
   let indexs = new Array(autoSwitch.length).fill(0)
   autoSwitch.map((item: any, index: number) => {
     const { seriesIndex, timeout } = item

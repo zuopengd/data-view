@@ -111,3 +111,17 @@ export function deepMerge(target: any, merged: any) {
 
   return target
 }
+
+/**
+ * 数字千位分割
+ * @param {} num
+ * @returns
+ */
+export function numFormat(num: number) {
+  return num.toString().replace(/\d+/, function (n) {
+    // 先提取整数部分
+    return n.replace(/(\d)(?=(\d{3})+$)/g, function ($1) {
+      return $1 + ','
+    })
+  })
+}
