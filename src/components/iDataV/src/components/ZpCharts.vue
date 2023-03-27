@@ -30,7 +30,7 @@ const props = defineProps({
   },
   config: {
     type: Object,
-    default: () => {}
+    default: () => { }
   }
 })
 
@@ -93,7 +93,16 @@ const initChart = () => {
 
   chart.setOption(option)
 
-  autoSwitch && autoSwitchInit()
+  if (autoSwitch) {
+    autoSwitchInit()
+    chart.on('mouseover', (params: any) => {
+      clearAutoSwitchIntelval()
+    })
+
+    chart.on('mouseout', (params: any) => {
+      autoSwitchInit()
+    })
+  }
 
   callback && callback(chart)
 }
@@ -115,24 +124,24 @@ const autoSwitchInit = () => {
 
     let interval = setInterval(() => {
       const length = option.series[seriesIndex].data.length
-      if (indexs[index] < length) {
-        chart.dispatchAction({ type: 'downplay', seriesIndex: seriesIndex })
-        chart.dispatchAction({
-          type: 'highlight',
-          seriesIndex: seriesIndex,
-          dataIndex: indexs[index]
-        })
-        chart.dispatchAction({
-          type: 'showTip',
-          seriesIndex: seriesIndex,
-          dataIndex: indexs[index]
-        })
-        indexs[index]++
-      } else {
-        indexs[index] = 0
-      }
+      switchIndex(seriesIndex, indexs[index] % length)
+      indexs[index]++
     }, timeout)
     autoSwitchIntelval.push(interval)
+  })
+}
+
+const switchIndex = (seriesIndex: number, dataIndex: number) => {
+  chart.dispatchAction({ type: 'downplay', seriesIndex: seriesIndex })
+  chart.dispatchAction({
+    type: 'highlight',
+    seriesIndex: seriesIndex,
+    dataIndex: dataIndex
+  })
+  chart.dispatchAction({
+    type: 'showTip',
+    seriesIndex: seriesIndex,
+    dataIndex: dataIndex
   })
 }
 
