@@ -4,7 +4,7 @@
       :num="123234.1111"
       :config="{ decimal: 2, kilobit: false, style: { fontSize: '33px' } }"
     /> -->
-    <zp-charts :option="option" :config="{ mapjson: map, autoSwitch: [{ seriesIndex: 0, timeout: 1000 }] }" />
+    <zp-charts :option="option" :config="{ mapjson: map, autoSwitch: [{ seriesIndex: 0, timeout: 2000 }] }" />
   </main>
 </template>
 
@@ -128,17 +128,23 @@ const init = () => {
             borderColor: '#32CBE0',
             borderWidth: 1.5,
             areaColor: {
-              type: 'radial',
-              x: 0.5,
-              y: 0.5,
-              r: 0.8,
-              colorStops: [{
-                offset: 0, color: 'rgba(147, 235, 248, 0)' // 0% 处的颜色
-              }, {
-                offset: 1, color: 'rgba(147, 235, 248, .2)' // 100% 处的颜色
-              }],
-              global: false // 缺省为 false
-            }
+              type: 'linear-gradient',
+              x: 0,
+              y: 1000,
+              x2: 0,
+              y2: 0,
+              colorStops: [
+                {
+                  offset: 0.5,
+                  color: '#0D59C1', // 0% 处的颜色
+                },
+                {
+                  offset: 1,
+                  color: '#53C9C7', // 100% 处的颜色
+                },
+              ],
+              global: true, // 缺省为 false
+            },
           },
           emphasis: {
             label: {
