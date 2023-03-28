@@ -4,7 +4,10 @@
       :num="123234.1111"
       :config="{ decimal: 2, kilobit: false, style: { fontSize: '33px' } }"
     /> -->
-    <zp-charts :option="option" :config="{ mapjson: map, autoSwitch: [{ seriesIndex: 0, timeout: 2000 }] }" />
+    <zp-charts
+      :option="option"
+      :config="{ mapjson: map, autoSwitch: [{ seriesIndex: 0, timeout: 2000 }] }"
+    />
   </main>
 </template>
 
@@ -20,7 +23,7 @@ let data: any = [
   { name: '游仙区', value: (Math.random() * 1000 + 100).toFixed(0) },
   { name: '安州区', value: (Math.random() * 1000 + 100).toFixed(0) },
   // { name: '三台县', value: (Math.random() * 1000 + 100).toFixed(0) },
-  { name: '盐亭县', value: (Math.random() * 1000 + 100).toFixed(0) },
+  { name: '盐亭县', value: (Math.random() * 1000 + 100).toFixed(0) }
   // { name: '梓潼县', value: (Math.random() * 1000 + 100).toFixed(0) },
   // { name: '平武县', value: (Math.random() * 1000 + 100).toFixed(0) },
   // { name: '北川羌族自治县', value: (Math.random() * 1000 + 100).toFixed(0) },
@@ -35,12 +38,15 @@ const sandian = () => {
   let mapFeatures = JSON.parse(map).features
 
   sandianlist = data.map((item: any) => {
-    let name = item.name;
+    let name = item.name
     let value = [item.value]
 
-    value = [...mapFeatures.find((it: any) => {
-      return it.properties.name === name
-    }).properties.centroid, value]
+    value = [
+      ...mapFeatures.find((it: any) => {
+        return it.properties.name === name
+      }).properties.centroid,
+      value
+    ]
 
     return { name, value }
   })
@@ -51,24 +57,22 @@ const init = () => {
   sandian()
   // console.log(sandianlist)
   return {
-    backgroundColor: '#062343',
+    // backgroundColor: '#062343',
     tooltip: {
       show: true,
       enterable: true, //鼠标可进入浮层内
       // triggerOn: "click", // 点击触发
       backgroundColor: 'transparent',
-      extraCssText:
-        'box-shadow:none;border: 0px solid white;min-width: 138px;',
-      textStyle: {
-      },
+      extraCssText: 'box-shadow:none;border: 0px solid white;min-width: 138px;',
+      textStyle: {},
       formatter: function (params: any) {
         return `<div class="tooltip">
           <div>${params.name}</div>
           <div><span>求职数：</span><span>120</span><span>个</span></div>
           <div><span>岗位数：</span><span>300</span><span>个</span></div>
           </div>
-            `;
-      },
+            `
+      }
     },
     geo: [
       // 高亮虚影层
@@ -122,7 +126,7 @@ const init = () => {
           normal: {
             label: {
               show: false,
-              color: '#fff',
+              color: '#fff'
             },
             color: '#fff',
             borderColor: '#32CBE0',
@@ -136,20 +140,20 @@ const init = () => {
               colorStops: [
                 {
                   offset: 0.5,
-                  color: '#0D59C1', // 0% 处的颜色
+                  color: '#0D59C1' // 0% 处的颜色
                 },
                 {
                   offset: 1,
-                  color: '#53C9C7', // 100% 处的颜色
-                },
+                  color: '#53C9C7' // 100% 处的颜色
+                }
               ],
-              global: true, // 缺省为 false
-            },
+              global: true // 缺省为 false
+            }
           },
           emphasis: {
             label: {
               show: false,
-              color: '#fff',
+              color: '#fff'
             },
             borderWidth: 3,
             borderColor: 'rgba(255, 230, 175,0.8)',
@@ -158,28 +162,30 @@ const init = () => {
             textStyle: {
               color: '#fff',
               fontSize: 12,
-              backgroundColor: 'transparent',
+              backgroundColor: 'transparent'
             },
-            areaColor: new echarts.graphic.LinearGradient(
-              0,
-              0,
-              0,
-              1,
-              [
+            areaColor: {
+              x: 0,
+              y: 0,
+              x2: 0,
+              y2: 1,
+              type: 'linear',
+              global: false,
+              colorStops: [
                 {
                   offset: 0,
-                  color: '#1cfbfe',
+                  color: '#1cfbfe'
                 },
+
                 {
                   offset: 1,
-                  color: '#3348e7',
-                },
-              ],
-              false
-            ),
-          },
+                  color: '#3348e7'
+                }
+              ]
+            }
+          }
         },
-        data: sandianlist,
+        data: sandianlist
 
         // emphasis: {
         //   itemStyle: {
@@ -227,18 +233,14 @@ const init = () => {
             type: 'image',
             style: {
               image: sj, // 自定义的图片地址
-              x:
-                api.coord(sandianlist[params.dataIndex].value)[0] -
-                3, // 数据的设置
-              y:
-                api.coord(sandianlist[params.dataIndex].value)[1] -
-                66,
-            },
-          };
+              x: api.coord(sandianlist[params.dataIndex].value)[0] - 3, // 数据的设置
+              y: api.coord(sandianlist[params.dataIndex].value)[1] - 66
+            }
+          }
         },
         zlevel: 2,
-        data: sandianlist,
-      },
+        data: sandianlist
+      }
     ]
   }
 }
@@ -260,7 +262,6 @@ main {
 .tooltip div {
   background-repeat: no-repeat;
   background-size: 100% 100%;
-
 }
 
 .tooltip div:first-child {
@@ -285,7 +286,7 @@ main {
 
 .tooltip div:nth-child(2)::after,
 .tooltip div:nth-child(3)::after {
-  content: "";
+  content: '';
   position: absolute;
   width: 0px;
   height: 0px;
