@@ -30,16 +30,21 @@ const props = defineProps({
   },
   config: {
     type: Object,
-    default: () => { }
+    default: () => {}
   }
 })
 
 interface config {
+  beforeCallback: Function | null
   callback: Function | null
   autoSwitch: Array<any> | null
   mapjson: string | null
 }
 const defaultConfig: config = {
+  /**
+   * 渲染之前回调
+   */
+  beforeCallback: null,
   /**
    * 渲染完成后回调
    */
@@ -84,12 +89,14 @@ const afterAutoResizeMixinInit = () => {
 }
 const initChart = () => {
   const { option } = props
-  const { autoSwitch, callback, mapjson } = mergedConfig.value
+  const { autoSwitch, callback, mapjson, beforeCallback } = mergedConfig.value
   chart = echarts.init(instance?.refs[chartRef.value] as unknown as HTMLDivElement)
 
   if (!option) return
 
   mapjson && echarts.registerMap('mapjson', mapjson)
+
+  beforeCallback && beforeCallback({ echarts, chart })
 
   chart.setOption(option)
 
@@ -104,7 +111,7 @@ const initChart = () => {
     })
   }
 
-  callback && callback(chart)
+  callback && callback({ echarts, chart })
 }
 
 const onResize = () => {
