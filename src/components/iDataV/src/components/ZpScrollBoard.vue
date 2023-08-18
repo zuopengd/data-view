@@ -188,7 +188,8 @@ watch(
     stopAnimation()
     animationIndex.value = 0
     calcData()
-  }
+  },
+  { deep: true }
 )
 onMounted(() => {
   calcData()
